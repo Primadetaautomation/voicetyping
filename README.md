@@ -3,54 +3,64 @@
 Dicteer-app met globale hotkey:
 - Druk hotkey 1x: opname start
 - Druk dezelfde hotkey opnieuw: opname stopt
-- Transcriptie wordt direct getypt op de plek waar je cursor staat (ook in terminal)
+- Transcriptie wordt direct getypt op de plek waar je cursor staat
 
 Ondersteunde engines:
-- `whisper` (lokaal, via `faster-whisper`)
+- `whisper` (lokaal, offline, geen API key nodig)
+- `gemini` (Google Gemini, snel en nauwkeurig)
 - `assemblyai` (cloud API)
 - `google` (Google Speech-to-Text)
 
-## Snelle start met dubbelklik
+## Installatie op een nieuwe PC
 
-### macOS
-- Dubbelklik `install_mac.command` (eenmalig)
-- Dubbelklik daarna `start_mac.command`
-
-### Windows
-- Dubbelklik `install_windows.bat` (eenmalig)
-- Dubbelklik daarna `start_windows.bat`
-
-## Handmatige installatie (fallback)
+### Stap 1: Download het project
 
 ```bash
-cd /Users/jamese/voicetyping
-python3 -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
+git clone https://github.com/Primadetaautomation/voicetyping.git
+cd voicetyping
 ```
 
-## 2) Configuratie maken
+Of download als ZIP: klik "Code" > "Download ZIP" op GitHub.
 
-```bash
-python voice_typer.py setup
-```
+### Stap 2: Installeer (dubbelklik)
 
-Dit maakt standaard `~/.voice-typer.toml`.
+**macOS:**
+- Dubbelklik `install_mac.command`
+- Het script checkt Python, installeert dependencies, en opent het settings venster
 
-Voorbeelden:
-- Hotkey: `ctrl+alt+d`
-- macOS hotkey met command: `cmd+shift+d`
-- Taal: `nl` (Whisper/AssemblyAI) of `nl-NL` (Google)
+**Windows:**
+- Dubbelklik `install_windows.bat`
+- Het script checkt Python, installeert dependencies, en opent het settings venster
 
-## 2b) GUI Instellingen (optioneel)
+> Vereist: Python 3.10+ ([download hier](https://www.python.org/downloads/))
+> Windows: vink "Add Python to PATH" aan tijdens installatie!
+
+### Stap 3: Start
+
+**macOS:** Dubbelklik `start_mac.command`
+**Windows:** Dubbelklik `start_windows.bat`
+
+Dat is het! Druk je hotkey (standaard Ctrl+Alt+D) om te dicteren.
+
+## Configuratie
+
+### GUI Settings (aanbevolen)
 
 ```bash
 python voice_typer.py settings
 ```
 
-Dit opent een grafisch instellingenvenster waar je alle opties kunt aanpassen.
+Opent een grafisch venster waar je alles kunt instellen: engine, hotkey, taal, API keys.
 
-## 3) Starten
+### CLI Setup (alternatief)
+
+```bash
+python voice_typer.py setup
+```
+
+Interactieve wizard in de terminal.
+
+### Handmatig starten
 
 ```bash
 python voice_typer.py run
@@ -62,38 +72,36 @@ Met overrides:
 python voice_typer.py run --engine whisper --hotkey ctrl+alt+space --language nl
 ```
 
-## Engine-specifiek
+## Engines
 
-### Whisper (aanrader voor privacy/offline)
-- Geen API key nodig.
-- Kies model in setup (`tiny`, `base`, `small`, `medium`, `large-v3`).
+| Engine | Type | API Key | Snelheid |
+|--------|------|---------|----------|
+| Whisper | Lokaal/offline | Niet nodig | Medium |
+| Gemini | Cloud (Google) | Ja ([krijg hier](https://aistudio.google.com/apikey)) | Snel |
+| AssemblyAI | Cloud | Ja | Snel |
+| Google STT | Cloud | Credentials JSON | Snel |
 
-### AssemblyAI
-- Zet `assemblyai_api_key` in `~/.voice-typer.toml` of env var `ASSEMBLYAI_API_KEY`.
+## macOS permissies (belangrijk!)
 
-### Google Speech-to-Text
-- Zet `google_credentials_path` in `~/.voice-typer.toml` of env var `GOOGLE_APPLICATION_CREDENTIALS`.
+Geef je terminal app toegang via Systeeminstellingen > Privacy en beveiliging:
 
-## macOS permissies (belangrijk)
+1. **Microfoon** - voor audio opname
+2. **Toegankelijkheid** - voor tekst typen
+3. **Invoerbewaking** - voor globale hotkey
 
-Geef je terminal/python-app toegang via:
-- `System Settings -> Privacy & Security -> Accessibility`
-- `System Settings -> Privacy & Security -> Input Monitoring`
-- `System Settings -> Privacy & Security -> Microphone`
-
-Als je `.command` niet direct start:
-- Run eenmalig in terminal:
+Als `.command` bestanden niet starten, run eenmalig:
 
 ```bash
-cd /Users/jamese/voicetyping
 chmod +x install_mac.command start_mac.command
 ```
 
 ## Windows permissies
 
-- Zet microfoon-toegang aan in privacy settings.
-- Als typen in sommige apps geblokkeerd is: start terminal als Administrator.
+- Zet microfoon-toegang aan in privacy settings
+- Als typen niet werkt in sommige apps: start terminal als Administrator
 
-## Tip voor stabiel gebruik
+## Tips
 
-Run de app in een apart terminalvenster en focus daarna op het venster waar je wilt typen.
+- Run de app in een apart terminalvenster en focus daarna op het venster waar je wilt typen
+- macOS hotkey: Ctrl+Option+D (Option = Alt)
+- Config bestand: `~/.voice-typer.toml`

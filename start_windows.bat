@@ -11,7 +11,15 @@ if not exist ".venv\Scripts\python.exe" (
 
 call ".venv\Scripts\activate.bat"
 
-echo Voice Typer wordt gestart...
+echo.
+echo =============================================
+echo      Voice Typer - Actief
+echo =============================================
+echo.
+echo   Hotkey indrukken = opname starten
+echo   Nogmaals indrukken = stoppen + transcriberen
+echo   Ctrl+C = app afsluiten
+echo.
 python voice_typer.py run
 
 echo.

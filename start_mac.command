@@ -14,5 +14,13 @@ fi
 
 source .venv/bin/activate
 
-echo "Voice Typer wordt gestart..."
+echo ""
+echo "╔═══════════════════════════════════╗"
+echo "║     Voice Typer - Actief          ║"
+echo "╚═══════════════════════════════════╝"
+echo ""
+echo "  Hotkey indrukken = opname starten"
+echo "  Nogmaals indrukken = stoppen + transcriberen"
+echo "  Ctrl+C = app afsluiten"
+echo ""
 python voice_typer.py run
