@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh issue list:*)",
+      "Bash(gh issue view:*)",
+      "Bash(gh issue comment:*)",
+      "Bash(/Users/jamese/voicetyping/.venv/bin/python:*)",
+      "Bash(.venv/bin/python:*)",
+      "Bash(.venv/bin/pip install:*)",
+      "Bash(git -C /Users/jamese/voicetyping rev-parse --git-dir)",
+      "Bash(git -C /Users/jamese/voicetyping remote -v)",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(gh repo create:*)",
+      "Bash(~/bin/setup-project.sh:*)",
+      "Bash(git push:*)"
+    ]
+  }
+}
