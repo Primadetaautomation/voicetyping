@@ -19,6 +19,13 @@ try:
 except ModuleNotFoundError:  # Python < 3.11
     import tomli as tomllib
 
+try:
+    import rumps
+
+    _HAS_RUMPS = True
+except ImportError:
+    _HAS_RUMPS = False
+
 
 DEFAULT_CONFIG_PATH = Path.home() / ".voice-typer.toml"
 
@@ -462,9 +469,15 @@ class VoiceTyperApp:
             with self._lock:
                 self._is_busy = False
 
+    def _start_hotkey_listener(self, normalized_hotkey: str) -> None:
+        from pynput.keyboard import GlobalHotKeys
+
+        with GlobalHotKeys({normalized_hotkey: self.toggle_recording}) as listener:
+            listener.join()
+
     def run(self) -> None:
         try:
-            from pynput.keyboard import GlobalHotKeys
+            from pynput.keyboard import GlobalHotKeys  # noqa: F401
         except ImportError as exc:
             raise RuntimeError(
                 "pynput ontbreekt. Installeer met: pip install -r requirements.txt"
@@ -476,8 +489,40 @@ class VoiceTyperApp:
         print(f"Hotkey: {normalized_hotkey}")
         print("Druk dezelfde hotkey om opname te starten/stoppen. Stop met Ctrl+C.")
 
-        with GlobalHotKeys({normalized_hotkey: self.toggle_recording}) as listener:
-            listener.join()
+        if not _HAS_RUMPS:
+            self._start_hotkey_listener(normalized_hotkey)
+            return
+
+        # Start pynput hotkey listener in background thread
+        hotkey_thread = threading.Thread(
+            target=self._start_hotkey_listener,
+            args=(normalized_hotkey,),
+            daemon=True,
+        )
+        hotkey_thread.start()
+
+        # Build rumps menubar app on main thread
+        menubar = rumps.App("VT", quit_button=None)
+        status_item = rumps.MenuItem("Status: klaar", callback=None)
+        stop_item = rumps.MenuItem("Stop", callback=lambda _: rumps.quit_application())
+        menubar.menu = [status_item, None, stop_item]
+
+        @rumps.timer(0.5)
+        def update_status(_):
+            with self._lock:
+                recording = self._is_recording
+                busy = self._is_busy
+            if recording:
+                menubar.title = "\U0001F534 VT"
+                status_item.title = "Status: opname..."
+            elif busy:
+                menubar.title = "\u23F3 VT"
+                status_item.title = "Status: transcriberen..."
+            else:
+                menubar.title = "VT"
+                status_item.title = "Status: klaar"
+
+        menubar.run()
 
 
 def prompt(question: str, default: str) -> str:
